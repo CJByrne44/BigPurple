@@ -1,5 +1,5 @@
 html {
-    background-color: rgb(31, 31, 31);
+    background-color: rgb(255, 31, 31);
     font-family: 'Atkinson Hyperlegible', sans-serif;
     color: white;
     touch-action: manipulation;
@@ -39,13 +39,13 @@ html {
     cursor: pointer;
 }
 
-#googleLogo {
+/* #googleLogo {
     height: 20px;
     width: 20px;
     positon: relative;
     top: 4px;
     left: -6px;
-}
+} */
 nav {
     display: flex;
     justify-content: end;
@@ -158,3 +158,4 @@ ul {
 #ranking0 {
     font-weight: 900;
     color: #7842b4;
+}
