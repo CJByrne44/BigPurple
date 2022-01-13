@@ -1,7 +1,6 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.0.1/firebase-app.js";
 import { getAuth, GoogleAuthProvider, signOut, signInWithPopup, onAuthStateChanged} from "https://www.gstatic.com/firebasejs/9.0.1/firebase-auth.js";
-import { getFirestore, collection, doc, setDoc, getDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/9.0.1/firebase-firestore.js";
 import { getDatabase, ref, set, get, child, query, orderByChild, orderByValue, limitToFirst, limitToLast, onChildChanged} from "https://www.gstatic.com/firebasejs/9.0.1/firebase-database.js";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -28,14 +27,6 @@ class Ranking {
 
 //Wait for the webpage to load
 document.addEventListener("DOMContentLoaded", event => {
-    // Initialize Firebase
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-
-    const db = getDatabase(app);
-    const dbRef = ref(getDatabase())
-
-    const provider = new GoogleAuthProvider();
 
     const whenSignedIn = document.getElementById('whenSignedIn')
     const whenSignedOut = document.getElementById('whenSignedOut')
@@ -48,23 +39,29 @@ document.addEventListener("DOMContentLoaded", event => {
 
     const userDetails = document.getElementById('userDetails');
 
-    signInBtn.onclick = () => signInWithPopup(auth, provider)
-                            .then((result) => {
-                                const credential = GoogleAuthProvider.credentialFromResult(result);
-                                const token = credential.accessToken;
-                                const user = result.user;
-                            }).catch((error) => {
-                                const errorCode = error.code;
-                                const errorMessage = error.message;
-                                const email = error.email;
-                                const credential = GoogleAuthProvider.credentialFromError(error);
-                            });
+    signInBtn.onclick = () => {
+        const data = { todo: 'signInWithPopup'}
+        const options = {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+        };
+        fetch('/api', options);
+    }
 
-    signOutBtn.onclick = () => signOut(auth).then(() => {
-                                // Sign-out successful.
-                            }).catch((error) => {
-                                // An error happened.
-                            });
+    signOutBtn.onclick = () => {
+        const data = { todo: 'signOut'}
+        const options = {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+        };
+        fetch('/api', options);
+    }
 
     const createThing = document.getElementById('createThing');
     const thingsList = document.getElementById('thingsList');
@@ -195,3 +192,17 @@ function returnTop(db, rankingLength) {
     });
     return rankingList
 }
+
+const data = {num1: 5, num2 : 10};
+const options = {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify(data)
+};
+fetch('/api', options).then((response) => {
+  let par = document.createElement('p')
+  par.innerHTML = `urine luck`;
+  document.body.appendChild(par); 
+})
