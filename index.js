@@ -1,219 +1,140 @@
-const express = require('express');
-const app = express()
-app.listen(5000, () => console.log('listening at 5000'));
-app.use(express.static('public'));
-app.use(express.json({ limit: '1mb'}));
+import express from 'express'
+import { createServer} from 'http';
+import { Server } from 'socket.io';
+import { initializeApp } from "firebase/app";
+import { getDatabase, ref, set, get, child, query, orderByChild, orderByValue, limitToFirst, limitToLast, onChildChanged} from "firebase/database";
 
-// Import the functions you need from the SDKs you need
-import { initializeApp } from "https://www.gstatic.com/firebasejs/9.0.1/firebase-app.js";
-import { getAuth, GoogleAuthProvider, signOut, signInWithPopup, onAuthStateChanged} from "https://www.gstatic.com/firebasejs/9.0.1/firebase-auth.js";
-import { getFirestore, collection, doc, setDoc, getDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/9.0.1/firebase-firestore.js";
-import { getDatabase, ref, set, get, child, query, orderByChild, orderByValue, limitToFirst, limitToLast, onChildChanged} from "https://www.gstatic.com/firebasejs/9.0.1/firebase-database.js";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
-
-// Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
-  apiKey: "AIzaSyCO8uwG1Foy3F8Wgbkp1bKK1y_XopS7IUU",
-  authDomain: "button-c9fe1.firebaseapp.com",
-  databaseURL: "https://button-c9fe1-default-rtdb.firebaseio.com",
-  projectId: "button-c9fe1",
-  storageBucket: "button-c9fe1.appspot.com",
-  messagingSenderId: "1066996962300",
-  appId: "1:1066996962300:web:fa6f056598a2fd5c8f5879",
-  measurementId: "G-323PNTC426"
-};
+    apiKey: "AIzaSyCO8uwG1Foy3F8Wgbkp1bKK1y_XopS7IUU",
+    authDomain: "button-c9fe1.firebaseapp.com",
+    databaseURL: "https://button-c9fe1-default-rtdb.firebaseio.com",
+    projectId: "button-c9fe1",
+    storageBucket: "button-c9fe1.appspot.com",
+    messagingSenderId: "1066996962300",
+    appId: "1:1066996962300:web:fa6f056598a2fd5c8f5879",
+    measurementId: "G-323PNTC426"
+  };
 
-class Ranking {
+  class Ranking {
     constructor(name, count) {
         this.name = name;
         this.count = count;
     }
 }
 
-//Wait for the webpage to load
-document.addEventListener("DOMContentLoaded", event => {
-    // Initialize Firebase
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
+const firebaseApp = initializeApp(firebaseConfig);
+const db = getDatabase(firebaseApp);
+const globalCountRef = ref(db, 'globals/totalCount');
+const dbRef = ref(getDatabase())
 
-    const db = getDatabase(app);
-    const dbRef = ref(getDatabase())
-
-    const provider = new GoogleAuthProvider();
-
-    const whenSignedIn = document.getElementById('whenSignedIn')
-    const whenSignedOut = document.getElementById('whenSignedOut')
-
-    const signInBtn = document.getElementById('signInBtn');
-    const signOutBtn = document.getElementById('signOutBtn')
-
-    const globalCount = document.getElementById('globalCount');
-    const userCount = document.getElementById('userCount');
-
-    const userDetails = document.getElementById('userDetails');
-
-    app.post('/api', (request, response) => {
-        console.log(request.body);
-        const data = request.body
-        response.json({
-            status: 'success'
-        });
-
-        if (data.todo == 'signInWithPopup') {mysignInWithPopup()}
-        if (data.todo == 'signInWithPopup') {mysignOut()}
-    })
-
-
-    const createThing = document.getElementById('createThing');
-    const thingsList = document.getElementById('thingsList');
-
-    let thingsRef;
-    let unsubscribe;
-    let ranking;
-
-    ranking = returnTop(db, 10)
-    setTimeout(() => {
-        for (let i = 0; i < ranking.length; i++) {
-            let listItem = document.getElementById(`ranking${i}`);
-            let player = ranking[i]
-            listItem.innerHTML = `${i + 1}. ${player.name}: ${player.count}`
-        }
-    }, 1000)
-    const globalCountRef = ref(db, 'globals/totalCount');
-    onChildChanged(ref(db, 'users/'), () => {
-        ranking = returnTop(db, 10)
-        setTimeout(() => {
-            for (let i = 0; i < ranking.length; i++) {
-                let listItem = document.getElementById(`ranking${i}`);
-                let player = ranking[i]
-                listItem.innerHTML = `${i + 1}. ${player.name}: ${player.count}`
-            }
-        }, 10)
-        get(globalCountRef).then((snapshot) => {
-                if (snapshot.exists()) {
-                    let count = snapshot.val();
-                    globalCount.innerHTML = `Global: ${count}`;
-                  }
-            })
-
-    })
-    // On Login:
-    onAuthStateChanged(auth, async user => {
-        if (user != null) {
-            // Signed in
-
-            whenSignedIn.hidden = false;
-            whenSignedOut.hidden = true;
-
-            const userPath = 'users/' + user.uid;
-            const usersRef = ref(db, userPath);
-            const countRef = ref(db, userPath + '/count');
-            const globalCountRef = ref(db, 'globals/totalCount');
-
-            // Update User and Global Counts: 
-            get(countRef).then((snapshot) => {
-                if (snapshot.exists()) {
-                    let count = snapshot.val();
-                    userCount.innerHTML = `You: ${count}`;
-                  }
-            })
-            get(globalCountRef).then((snapshot) => {
-                if (snapshot.exists()) {
-                    let count = snapshot.val();
-                    globalCount.innerHTML = `Global: ${count}`;
-                  }
-            })
-
-            get(child(dbRef, userPath)).then((snapshot) => {
-                if (!snapshot.exists()) {
-                    set(ref(db, userPath), {
-                        uid: user.uid,
-                        name: user.displayName,
-                        email: user.email,
-                        count: 0
-                    })
-                }
-            })
-
-        
-
-            theButton.onclick = () => {
-                get(countRef).then((snapshot) => {
-                    if (snapshot.exists()) {
-                        let count = snapshot.val();
-                        count++
-                        set(countRef, count)
-                        userCount.innerHTML = `You: ${count}`;
-                      }
-                })
-                get(globalCountRef).then((snapshot) => {
-                    if (snapshot.exists()) {
-                        let count = snapshot.val();
-                        count++
-                        set(globalCountRef, count)
-                        globalCount.innerHTML = `Global: ${count}`;
-                      }
-                })
-            }
-
-            // unsubscribe = usersRef
-            //     .where('uid', '==', user.uid)
-            //     .onSnapshot(querySnapshot => {
-            //         const items = querySnapshot.docs.map(doc => {
-
-            //             return `<li>${doc.data().name}</li>`
-            //         })
-
-            //         thingsList.innerHTML = items.join('');
-            //     })
-        } else {
-            // Not signed in
-            whenSignedIn.hidden = true;
-            whenSignedOut.hidden = false;
-
-            unsubscribe && unsubscribe();
-        }
-    });
-
+const httpServer = createServer();
+const io = new Server(httpServer, {
+    cors: { origin: '*'}
 })
 
-function returnTop(db, rankingLength) {
+const app = express()
+app.listen(4000, () => console.log('listening at 4000'));
+app.use(express.static('public'));
+app.use(express.json({ limit: '1mb'}));
+
+io.on('connection', async (socket) => {
+    console.log(socket.id)
+    socket.on('buttonClick', async (uid) => {
+        let count = await incrementCount(uid);
+        let globalCount = await incrementGlobalCount(uid);
+        io.emit('globalUpdate', globalCount);
+        socket.emit('countUpdate', count);
+    })
+    socket.on('signedIn', async (uid) => {
+        let personalCount = await returnCount(uid);
+        let globalCount = await returnGlobalCount();
+        let ranking = await returnTop(db, 10)
+        socket.emit('returnCounts', personalCount, globalCount, ranking);
+    })
+    socket.on('verifyUser', async (user) => {
+        await verifyUser(user);
+    })
+})
+onChildChanged(ref(db, 'users/'), async () => {
+    let ranking = await returnTop(db, 10)
+    io.emit('rankingUpdate', ranking);
+})
+
+httpServer.listen(5000)
+
+async function returnCount(uid) {
+    const userPath = 'users/' + uid;
+    const countRef = ref(db, userPath + '/count');
+
+    let snapshot = await get(countRef)
+    if (snapshot.exists()) {
+        let count = snapshot.val();
+        if (count == null) {count = 0}
+        return count
+        }
+}
+
+async function returnGlobalCount() {
+    const globalCountRef = ref(db, 'globals/totalCount');
+
+    let snapshot = await get(globalCountRef)
+    if (snapshot.exists()) {
+        let count = snapshot.val();
+        if (count == null) {count = 0}
+        return count
+        }
+}
+
+async function verifyUser(user) {
+    const userPath = 'users/' + user.uid;
+    let snapshot = await get(child(dbRef, userPath))
+        if (!snapshot.exists()) {
+            set(ref(db, userPath), {
+                uid: user.uid,
+                name: user.displayName,
+                email: user.email,
+                count: 0
+            })
+            return true;
+        }
+        return true;
+}
+
+async function incrementCount(uid) {
+    const userPath = 'users/' + uid;
+    const countRef = ref(db, userPath + '/count');
+    let snapshot = await get(countRef)
+    if (snapshot.exists()) {
+        let count = snapshot.val();
+        count--
+        set(countRef, count)
+        return count
+    }
+}
+
+async function incrementGlobalCount(uid) {
+    const globalCountRef = ref(db, 'globals/totalCount');
+    let snapshot = await get(globalCountRef)
+    if (snapshot.exists()) {
+        let count = snapshot.val();
+        count--
+        set(globalCountRef, count)
+        return count;
+    }
+}
+
+async function returnTop(db, rankingLength) {
     const highestClickers = query(ref(db, 'users'), orderByChild('count'), limitToLast(rankingLength));
     let test = new Array()
     let rankingList = new Array();
-    get(highestClickers).then((snapshot) => {
-        for (let key in snapshot.val()) {
-            let name = snapshot.val()[key].name.toString()
-            let count = snapshot.val()[key].count
-            let player = new Ranking(name, count);
-            rankingList.push(player);
-        }
-        rankingList.sort(function (a,b) {return a.count - b.count})
-        rankingList.reverse()
-    });
+    let snapshot = await get(highestClickers)
+    for (let key in snapshot.val()) {
+        let name = snapshot.val()[key].name.toString()
+        let count = snapshot.val()[key].count
+        let player = new Ranking(name, count);
+        rankingList.push(player);
+    }
+    rankingList.sort(function (a,b) {return a.count - b.count})
+    rankingList.reverse()
     return rankingList
-}
-
-function mysignInWithPopup() {
-    signInWithPopup(auth, provider)
-    .then((result) => {
-        const credential = GoogleAuthProvider.credentialFromResult(result);
-        const token = credential.accessToken;
-        const user = result.user;
-    }).catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        const email = error.email;
-        const credential = GoogleAuthProvider.credentialFromError(error);
-    });
-}
-
-function mysignOut() {
-    signOut(auth).then(() => {
-        // Sign-out successful.
-    }).catch((error) => {
-        // An error happened.
-    });
 }
