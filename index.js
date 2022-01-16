@@ -106,7 +106,7 @@ async function incrementCount(uid) {
     let snapshot = await get(countRef)
     if (snapshot.exists()) {
         let count = snapshot.val();
-        count--
+        count++
         set(countRef, count)
         return count
     }
@@ -117,7 +117,7 @@ async function incrementGlobalCount(uid) {
     let snapshot = await get(globalCountRef)
     if (snapshot.exists()) {
         let count = snapshot.val();
-        count--
+        count++
         set(globalCountRef, count)
         return count;
     }
