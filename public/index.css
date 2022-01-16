@@ -47,8 +47,8 @@ html {
     left: -6px;
 } */
 nav {
-    display: flex;
-    justify-content: end;
+    /* display: flex;
+    justify-content: end; */
 }
 #signOutBtn {
     background-color: #7842b4;
@@ -57,13 +57,13 @@ nav {
     padding: 12px 24px;
     text-align: center;
     text-decoration: none;
-    display: inline-block;
     font-size: 14px;
     border-radius: 4px;
     box-shadow: 5px 5px 15px -6px rgba(0,0,0,0.59);
     font-family: 'Bayon', sans-serif;
     margin: 1% 1%;
     transition-duration: 200ms;
+    float: right;
 }
 #signOutBtn:hover {
     background-color: rgb(100, 47, 160);

@@ -48,7 +48,7 @@ io.on('connection', async (socket) => {
     socket.on('signedIn', async (uid) => {
         let personalCount = await returnCount(uid);
         let globalCount = await returnGlobalCount();
-        let ranking = await returnTop(db, 10)
+        let ranking = await returnTop(db, 20)
         socket.emit('returnCounts', personalCount, globalCount, ranking);
     })
     socket.on('verifyUser', async (user) => {
