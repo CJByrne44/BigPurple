@@ -76,7 +76,7 @@ nav {
     left: 50%;
     top: 50%;
     -webkit-transform: translate(-50%, -50%);
-    transform: translate(-50%, -50%);
+    transform: translate(-50%, -45%);
     text-align: center;
 }
 #theButton {
@@ -84,7 +84,6 @@ nav {
     border: none;
     height:250px;
     width: 250px;
-    display: inline-block;
     border-radius: 100%;
     box-shadow: 5px 5px 15px -6px rgba(0,0,0,0.59);
     transition-duration: 100ms;
@@ -121,10 +120,11 @@ nav {
     font-weight: 700;
     font-size: 18px;
 }
-ul {
+#leaderboard {
     padding: 7% 1%;
     background-color: rgb(219, 219, 219);
     border-radius: 10px;
+    height: 200px;
 }
 .rankingItem {
     color:rgb(31, 31, 31);
