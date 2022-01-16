@@ -124,7 +124,7 @@ nav {
     padding: 7% 1%;
     background-color: rgb(219, 219, 219);
     border-radius: 10px;
-    height: 200px;
+    height: auto;
 }
 .rankingItem {
     color:rgb(31, 31, 31);
@@ -162,6 +162,14 @@ nav {
     padding: 20px 10px;
     width:75%;
     
+    }
+    #leaderboard {
+        font-size: smaller;
+        padding: 4% 0%;
+    }
+    #buttonStats p{
+        font-weight: 700;
+        font-size: 14px;
     }
 
 }
