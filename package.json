@@ -1,7 +1,6 @@
 {
-  "name": "ButtonWebsite",
+  "name": "buttonwebsite",
   "version": "1.0.0",
-  "description": "",
   "main": "index.js",
   "type": "module",
   "scripts": {
@@ -18,5 +17,14 @@
   },
   "devDependencies": {
     "nodemon": "^2.0.15"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CJByrne44/BigPurple.git"
+  },
+  "bugs": {
+    "url": "https://github.com/CJByrne44/BigPurple/issues"
+  },
+  "homepage": "https://github.com/CJByrne44/BigPurple#readme",
+  "description": ""
 }

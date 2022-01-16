@@ -25,8 +25,8 @@ class Ranking {
     }
 }
 
-// TODO: CHANGE TO 73.119.71.88:5000 VVVVV <--------------------------
-const socket = io('http://localhost:5000')
+// TODO: CHANGE TO 73.119.71.88:5000
+const socket = io("http://73.119.71.88:5000")
 socket.on("connect", () => {
     console.log(`You connected with id: ${socket.id}`)
 })
