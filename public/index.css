@@ -173,8 +173,13 @@ nav {
         font-size: 14px;
     }
     #theButton {
-        height:200px;
-        width: 200px;
+        height:225px;
+        width: 225px;
+    }
+    #theButton:hover {
+        height: 225px;
+        width: 225px;
+        cursor: pointer;
     }
 
 }
