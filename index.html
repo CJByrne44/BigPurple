@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Big Purple</title>
+    <link rel="stylesheet" href="index.css" type="text/css">
+
+    <link rel="icon" href="icon.png">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible&display=swap" rel="stylesheet">
+
+    <script defer type="module" src="app.js"></script>
+    <meta name="viewport" content="width=device-width, minimal-ui">
+  </head>
+  <body>
+    <section id="whenSignedOut">
+        <h1 class="title">Big Purple</h1>
+        <button id="signInBtn"><img src='google.png' alt='google logo' id='googleLogo' hidden="true">Login with Google</button>
+    </section>
+
+    <section id="whenSignedIn" hidden="true">
+      <nav>
+        <button id="signOutBtn">Sign Out</button>
+      </nav>
+      <div id="buttonDiv">
+        <button id="theButton"></button>
+        <script type="text/javascript">
+          const button = document.getElementById('theButton'); // get the element
+          button.addEventListener('click', () => {
+            button.classList.add("grow");
+            setTimeout(() => {
+            button.classList = [];
+            button.classList.add("shrink");
+          }, 150)
+            setTimeout(() => {
+            button.classList = [];
+          }, 300)
+        })
+        </script>
+
+        <script>
+        </script>
+
+        <div id= "buttonStats">
+          <p id="globalCount"></p>
+          <p id="userCount"></p>
+          <ul>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+  </body>
+</html>
